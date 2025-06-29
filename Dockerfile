@@ -1,7 +1,11 @@
-FROM jenkins/jenkins:lts
+FROM golang:1.25rc1-bullseye
 
-USER root
+WORKDIR /app
 
-RUN apt-get update && apt-get install -y docker.io
+COPY . .
 
-USER jenkins
+RUN go build -o api
+
+EXPOSE 8080
+
+CMD ["./api"]
