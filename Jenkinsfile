@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'web-demo'
-        CONTAINER_NAME = 'jenkins'
+        CONTAINER_NAME = 'my-web'
         PORT = '8080'
     }
 
@@ -14,10 +14,16 @@ pipeline {
             }
         }
 
+        stage('Build Docker Image') {
+            steps {
+                bat "docker build -t $IMAGE_NAME ."
+            }
+        }
+
         stage('Remove Old Container') {
             steps {
                 script {
-                    sh """
+                    bat """
                     if docker ps -a --format '{{.Names}}' | grep -Eq '^${CONTAINER_NAME}\$'; then
                         docker rm -f $CONTAINER_NAME
                     fi
@@ -28,7 +34,7 @@ pipeline {
 
         stage('Run New Container') {
             steps {
-                sh "docker run -d --name $CONTAINER_NAME -p $PORT:80 $IMAGE_NAME"
+                bat "docker run -d --name $CONTAINER_NAME -p $PORT:80 $IMAGE_NAME"
             }
         }
     }
