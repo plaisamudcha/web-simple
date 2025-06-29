@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'web-demo'
         CONTAINER_NAME = 'my-web'
-        PORT = '8080'
+        PORT = '5000'
     }
 
     stages {
