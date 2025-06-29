@@ -16,14 +16,14 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat "docker build -t $IMAGE_NAME ."
+                sh "docker build -t $IMAGE_NAME ."
             }
         }
 
         stage('Remove Old Container') {
             steps {
                 script {
-                    bat """
+                    sh """
                     if docker ps -a --format '{{.Names}}' | grep -Eq '^${CONTAINER_NAME}\$'; then
                         docker rm -f $CONTAINER_NAME
                     fi
@@ -34,7 +34,7 @@ pipeline {
 
         stage('Run New Container') {
             steps {
-                bat "docker run -d --name $CONTAINER_NAME -p $PORT:80 $IMAGE_NAME"
+                sh "docker run -d --name $CONTAINER_NAME -p $PORT:80 $IMAGE_NAME"
             }
         }
     }
