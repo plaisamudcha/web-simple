@@ -1,8 +1,14 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = 'my-web-cicd'
+        CONTAINER_NAME = 'my-web'
+        PORT = '8080'
+    }
+
     stages {
-        stage('Clone') {
+        stage('Clone Repository') {
             steps {
                 git branch: 'main', url: 'https://github.com/plaisamudcha/web-simple.git'
             }
@@ -10,18 +16,25 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t my-web-cicd .'
+                sh "docker build -t $IMAGE_NAME ."
             }
         }
 
-        stage('Run Container') {
+        stage('Remove Old Container') {
             steps {
                 script {
-                    // Try to remove the container if it exists, ignore error
-                    sh 'docker rm -f my-web || exit 0'
-                    // Run new container
-                    sh 'docker run -d --name my-web -p 8080:80 my-web-cicd'
+                    sh """
+                    if docker ps -a --format '{{.Names}}' | grep -Eq '^${CONTAINER_NAME}\$'; then
+                        docker rm -f $CONTAINER_NAME
+                    fi
+                    """
                 }
+            }
+        }
+
+        stage('Run New Container') {
+            steps {
+                sh "docker run -d --name $CONTAINER_NAME -p $PORT:80 $IMAGE_NAME"
             }
         }
     }
