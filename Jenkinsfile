@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t my-web-cicd .'
+                sh 'docker build -t my-web-cicd .'
             }
         }
 
@@ -18,9 +18,9 @@ pipeline {
             steps {
                 script {
                     // Try to remove the container if it exists, ignore error
-                    bat 'docker rm -f my-web || exit 0'
+                    sh 'docker rm -f my-web || exit 0'
                     // Run new container
-                    bat 'docker run -d --name my-web -p 8080:80 my-web-cicd'
+                    sh 'docker run -d --name my-web -p 8080:80 my-web-cicd'
                 }
             }
         }
