@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'my-web-cicd'
-        CONTAINER_NAME = 'my-web'
+        IMAGE_NAME = 'web-demo'
+        CONTAINER_NAME = 'jenkins'
         PORT = '8080'
     }
 
